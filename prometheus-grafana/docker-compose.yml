@@ -1,0 +1,54 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - ":9090"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.prometheus.rule=Host(`prometheus.localhost`)
+      - traefik.http.routers.prometheus.entrypoints=web
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - proxy
+    environment:
+      TZ: Asia/Kolkata # Your timezone
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - ":3000"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.grafana.rule=Host(`grafana.localhost`)
+      - traefik.http.routers.grafana.entrypoints=web
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      TZ: Asia/Kolkata
+      GF_METRICS_ENABLED: "true"
+    networks:
+      - proxy
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - ":8080"
+    networks:
+      - proxy
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+
+volumes:
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+networks:
+  proxy:
+    external: true

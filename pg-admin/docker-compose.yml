@@ -1,0 +1,26 @@
+services:
+  pg-admin:
+    image: dpage/pgadmin4:9.15
+    container_name: pg-admin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "kishan@gmail.com"
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_ENABLE_PSQL: "True"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.pgadmin.rule=Host(`pgadmin.localhost`)
+      - traefik.http.routers.pgadmin.entrypoints=web
+    volumes:
+      - pgadmin_volume:/var/lib/pgadmin
+    networks:
+      - proxy
+    ports:
+      - 58080:80
+    restart: unless-stopped
+
+networks:
+  proxy:
+    external: true
+
+volumes:
+  pgadmin_volume:

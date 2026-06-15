@@ -1,0 +1,32 @@
+services:
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+
+    command:
+      - -config.file=/etc/promtail/config.yml
+
+    volumes:
+      # Promtail config
+      - ./promtail-config.yml:/etc/promtail/config.yml:ro
+
+      # Docker logs
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+
+      # Docker metadata
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+      # Persist positions file
+      - promtail-data:/tmp
+
+    restart: unless-stopped
+
+    networks:
+      - proxy
+
+volumes:
+  promtail-data:
+
+networks:
+  proxy:
+    external: true

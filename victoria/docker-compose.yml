@@ -1,0 +1,12 @@
+services:
+  victoria-metrics:
+    image: victoriametrics/victoria-metrics:latest
+    ports: ["8428:8428"]
+    command: ["-retentionPeriod=30d"]
+    restart: unless-stopped
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

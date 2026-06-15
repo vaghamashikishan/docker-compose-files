@@ -1,0 +1,9 @@
+services:
+  filebrowser:
+    image: filebrowser/filebrowser:v2.30.0
+    # network_mode: "host"
+    ports:
+      - 58080:80
+    volumes:
+      - /Users/kishanvaghamashi/Downloads:/srv
+    restart: always

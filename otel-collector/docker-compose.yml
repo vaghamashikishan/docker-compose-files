@@ -1,0 +1,10 @@
+services:
+  otel-converter:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=victoria-metrics:8428
+
+networks:
+  proxy:
+    external: true

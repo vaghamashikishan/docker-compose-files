@@ -1,0 +1,24 @@
+global:
+  scrape_interval: 15s # How often to scrape targets
+  evaluation_interval: 15s # How often to evaluate rules
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # Grafana itself
+  - job_name: "grafana"
+    static_configs:
+      - targets: ["grafana:3000"]
+
+  # gin-investment-tracker
+  - job_name: "gin-investment-tracker"
+    static_configs:
+      - targets: ["investment-tracker:8000"]
+
+  # cadvisor
+  - job_name: "cadvisor"
+    static_configs:
+      - targets: ["cadvisor:8080"]
