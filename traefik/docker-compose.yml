@@ -1,3 +1,7 @@
+# RUN THIS BEFORE USING THIS FILE, THIS IS TO CREATE SECURITY CERTIFICATE
+# mkdir -p letsencrypt
+# touch letsencrypt/acme.json
+# chmod 600 letsencrypt/acme.json
 services:
   traefik:
     image: traefik:v3.7
@@ -6,16 +10,23 @@ services:
       - "80:80"
       - "443:443"
       - "8080:8080"
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
     labels:
       - traefik.enable=true
-      - traefik.http.routers.traefik.rule=Host(`traefik.localhost`)
-      - traefik.http.routers.traefik.entrypoints=web
+      - traefik.http.routers.traefik.rule=Host(`traefik.kishan-vaghamashi.engineer`)
+      - traefik.http.routers.traefik.entrypoints=websecure
       - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.tls.certresolver=letsencrypt
     networks:
       - proxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./letsencrypt:/letsencrypt
     restart: unless-stopped
 
 networks:
